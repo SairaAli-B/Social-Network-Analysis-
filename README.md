@@ -1,5 +1,6 @@
-# Social-Network-Analysis
-This simple project demonstrates how to perform network analysis and visualization using the igraph package in R. \\
+# 🕸️ Social-Network-Analysis
+This simple project demonstrates how to perform network analysis and visualization using the igraph package in R.
+
 🔍 Calculates key network stats like:
 1) Degree, diameter, edge density, reciprocity
 2) Closeness & betweenness centrality
