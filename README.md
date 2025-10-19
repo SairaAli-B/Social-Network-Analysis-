@@ -1,4 +1,4 @@
-# 🕸️ Social-Network-Analysis
+# 🕸️ Social-Network-Analysis in R
 This simple project demonstrates how to perform network analysis and visualization using the igraph package in R.
 
 🔍 Key Features:
