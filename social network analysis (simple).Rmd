@@ -1,0 +1,118 @@
+---
+title: "Network Analysis with igraph"
+author: "Saira Ali"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+\`\`\`{r setup, include=FALSE} knitr::opts_chunk\$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+# Install igraph (only runs if not installed)
+
+if (!require(igraph)) install.packages("igraph")\
+library(igraph)
+
+```{r}
+
+```
+
+# Create a small graph
+
+g \<- make_graph(c(1, 2))
+
+# Plot the graph
+
+plot(g,\
+vertex.color = "lightgreen",\
+vertex.shape = "circle",\
+vertex.size = 30,\
+vertex.label.color = "black",\
+edge.color = "red",\
+main = "Simple igraph Example")
+
+g1 \<- make_graph(c("Amy", "Ram", "Ram", "Li", "Li", "Amy", "Amy", "Li", "Kate", "Li"), directed = TRUE)
+
+degree(g1, mode = "all")\
+degree(g1, mode = "in")\
+degree(g1, mode = "out")
+
+diameter(g1, directed = FALSE, weights = NA)\
+edge_density(g1, loops = FALSE)\
+reciprocity(g1)\
+closeness(g1, mode = "all", weights = NA)\
+betweenness(g1, directed = TRUE, weights = NA)
+
+# Read dataset from GitHub
+
+data \<- read.csv("<https://raw.githubusercontent.com/bkrai/R-files-from-YouTube/main/networkdata.csv>")
+
+# Prepare data frame for igraph
+
+y \<- data.frame(data\$first, data\$second)
+
+# Create network (use new syntax)
+
+net \<- graph_from_data_frame(y, directed = TRUE)
+
+# Add attributes
+
+V(net)\$label \<- V(net)\$name\
+V(net)\$degree \<- degree(net)
+
+# Plot degree distribution
+
+hist(V(net)\$degree)
+
+# Plot network
+
+plot(net,\
+vertex.color = rainbow(52),\
+vertex.size = V(net)\$degree \* 0.4,\
+edge.arrow.size = 0.1,\
+layout = layout_with_fr)
+
+# Compute hub and authority scores
+
+scores \<- hits_scores(net)
+
+hs \<- scores\$hub\
+as \<- scores\$authority
+
+# Side-by-side plots
+
+par(mfrow = c(1, 2))\
+set.seed(123)
+
+plot(net,\
+vertex.size = hs \* 30,\
+main = "Hubs",\
+vertex.color = rainbow(52),\
+edge.arrow.size = 0.1,\
+layout = layout_with_kk)
+
+plot(net,\
+vertex.size = as \* 30,\
+main = "Authorities",\
+vertex.color = rainbow(52),\
+edge.arrow.size = 0.1,\
+layout = layout_with_kk)
+
+par(mfrow = c(1, 1))
+
+# Create an undirected version
+
+net_undirected \<- graph_from_data_frame(y, directed = FALSE)
+
+# Edge betweenness community detection
+
+cnet \<- cluster_edge_betweenness(net_undirected)
+
+# Plot graph with community colors
+
+plot(net_undirected,\
+vertex.color = membership(cnet),\
+main = "Communities in Network")
+
+# Optional: Dendrogram
+
+plot_dendrogram(cnet)\
